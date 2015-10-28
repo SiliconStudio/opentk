@@ -57,7 +57,11 @@ namespace OpenTK
         static BlittableValueType()
         {
             Type = typeof(T);
+#if _NET_CORECLR
+            if (Type.GetTypeInfo().IsValueType && !Type.GetTypeInfo().IsGenericType)
+#else
             if (Type.IsValueType && !Type.IsGenericType)
+#endif
             {
                 // Does this support generic types? On Mono 2.4.3 it does
                 // On .Net it doesn't.
@@ -113,10 +117,18 @@ namespace OpenTK
         static bool CheckType(Type type)
         {
             //Debug.Print("Checking type {0} (size: {1} bytes).", type.Name, Marshal.SizeOf(type));
+#if _NET_CORECLR
+            if (type.GetTypeInfo().IsPrimitive)
+#else
             if (type.IsPrimitive)
+#endif
                 return true;
 
+#if _NET_CORECLR
+            if (!type.GetTypeInfo().IsValueType)
+#else
             if (!type.IsValueType)
+#endif
                 return false;
 
             FieldInfo[] fields = type.GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
@@ -135,11 +147,13 @@ namespace OpenTK
         // or [StructLayout(LayoutKind.Explicit)]
         static bool CheckStructLayoutAttribute(Type type)
         {
-            StructLayoutAttribute[] attr = (StructLayoutAttribute[])
-                type.GetCustomAttributes(typeof(StructLayoutAttribute), true);
+#if _NET_CORECLR
+            StructLayoutAttribute attr = type.GetTypeInfo().GetCustomAttribute<StructLayoutAttribute>(true);
+#else
+            StructLayoutAttribute attr = (StructLayoutAttribute[]) type.GetCustomAttribute(typeof(StructLayoutAttribute), true);
+#endif
 
-            if ((attr == null) ||
-                (attr != null && attr.Length > 0 && attr[0].Value != LayoutKind.Explicit && attr[0].Pack != 1))
+            if ((attr == null) && attr.Value != LayoutKind.Explicit && attr.Pack != 1)
                 return false;
 
             return true;
