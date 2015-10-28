@@ -83,7 +83,7 @@ namespace OpenTK.Platform.Linux
             {
                 IntPtr pname = DeviceGetOutputNameInternal(device);
 #if !_NET_CORECLR
-                return pname == IntPtr.Zero ? String.Empty : new string((byte *)pname);
+                return pname == IntPtr.Zero ? String.Empty : new string((sbyte*) pname);
 #else
                 return pname == null ? String.Empty : UTF8String.String(pname);
 #endif

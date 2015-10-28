@@ -25,7 +25,6 @@
 using System;
 using System.Text;
 using System.Runtime.InteropServices;
-using System.Diagnostics.Contracts;
 
 namespace OpenTK.Platform
 {
@@ -46,16 +45,22 @@ namespace OpenTK.Platform
             }
             else
             {
-                byte* ptr = (byte*)o;
+                byte* ptr = o;
                 // Count number of available bytes.
                 while (*ptr != 0) { ptr++; }
                     // `nb' contains the number of bytes not including the null terminating one.
-                long nb = ptr - (byte*)o;
+                long nb = ptr - o;
                 if (nb > int.MaxValue)
                 {
                     throw new ArgumentOutOfRangeException("UTF-8 string too large");
                 }
+#if !_NET_CORECLR
+                byte[] bytes = new byte[nb];
+                Marshal.Copy((IntPtr) o, bytes, 0, (int) nb);
+                return Encoding.UTF8.GetString(bytes);
+#else
                 return Encoding.UTF8.GetString((byte*) o, (int) nb);
+#endif
             }
         }
 
@@ -74,7 +79,20 @@ namespace OpenTK.Platform
         /// <param name="n">Index from where to copy the data</param>
         public static string String(byte* o, int n)
         {
-            return (o == null ? null : Encoding.UTF8.GetString(o, n));
+            if (o == null)
+            {
+                return null;
+            }
+            else
+            {
+#if !_NET_CORECLR
+                byte[] bytes = new byte[n];
+                Marshal.Copy((IntPtr) o, bytes, 0, (int) n);
+                return Encoding.UTF8.GetString(bytes, 0, n);
+#else
+                return Encoding.UTF8.GetString((byte*) o, n);
+#endif
+            }
         }
 
         /// <summary>
@@ -82,7 +100,7 @@ namespace OpenTK.Platform
         /// </summary>
         public static string String(IntPtr o, int n)
         {
-            return (o == IntPtr.Zero ? null : Encoding.UTF8.GetString((byte*)o, n));
+            return String((byte*) o, n);
         }
     }
 }

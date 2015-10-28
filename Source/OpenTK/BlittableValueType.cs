@@ -147,12 +147,16 @@ namespace OpenTK
         // or [StructLayout(LayoutKind.Explicit)]
         static bool CheckStructLayoutAttribute(Type type)
         {
+            StructLayoutAttribute attr = null;
 #if _NET_CORECLR
-            StructLayoutAttribute attr = type.GetTypeInfo().GetCustomAttribute<StructLayoutAttribute>(true);
+            attr = type.GetTypeInfo().GetCustomAttribute<StructLayoutAttribute>(true);
 #else
-            StructLayoutAttribute attr = (StructLayoutAttribute[]) type.GetCustomAttribute(typeof(StructLayoutAttribute), true);
+            object [] attrs = type.GetCustomAttributes(typeof(StructLayoutAttribute), true);
+            if ((attrs != null) && (attrs.Length > 0))
+            {
+                attr = (StructLayoutAttribute) attrs[0];
+            }
 #endif
-
             if ((attr == null) && attr.Value != LayoutKind.Explicit && attr.Pack != 1)
                 return false;
 

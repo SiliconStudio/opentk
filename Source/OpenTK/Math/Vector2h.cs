@@ -271,7 +271,7 @@ namespace OpenTK
 
         #region ISerializable
 
-#if !MINIMAL
+#if !_NET_CORECLR
         /// <summary>Constructor used by ISerializable to deserialize the object.</summary>
         /// <param name="info"></param>
         /// <param name="context"></param>

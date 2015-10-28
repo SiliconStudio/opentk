@@ -2623,7 +2623,7 @@ namespace OpenTK.Graphics.ES10
                 unsafe
                 {
 #if !_NET_CORECLR
-                    return new string((byte *) Core.GetString((OpenTK.Graphics.ES10.All)name));
+                    return new string((sbyte *) Core.GetString((OpenTK.Graphics.ES10.All)name));
 #else
                     return UTF8String.String(Core.GetString((OpenTK.Graphics.ES10.All)name));
 #endif
