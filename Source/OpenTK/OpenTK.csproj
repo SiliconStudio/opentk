@@ -18,6 +18,7 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{A37A7E14-0000-0000-0000-000000000000}</ProjectGuid>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <OpenTKRewriteConfiguration>$(Configuration)</OpenTKRewriteConfiguration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <AssemblyKeyContainerName>
     </AssemblyKeyContainerName>
@@ -150,6 +151,8 @@
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
     <DebugSymbols>True</DebugSymbols>
     <DebugType>pdbonly</DebugType>
+    <OpenTKRewriteDebug>false</OpenTKRewriteDebug>
+    <OpenTKRewriteConfiguration>Release</OpenTKRewriteConfiguration>
   </PropertyGroup>
   <PropertyGroup>
     <SignAssembly>True</SignAssembly>
@@ -925,8 +928,8 @@
   <Target Name="AfterBuild">
     <Exec Condition="'$(OS)' == 'Windows_NT' and '$(OpenTKRewriteDebug)' == 'true'" Command="$(OutputPath)..\..\Tools\Debug\Rewrite.exe $(OutputPath)OpenTK.dll ..\..\OpenTK.snk -debug -references-file=$(IntermediateOutputPath)OpenTKReferences.cache" />
     <Exec Condition="'$(OS)' == 'Windows_NT' and '$(OpenTKRewriteDebug)' == 'false'" Command="$(OutputPath)..\..\Tools\Release\Rewrite.exe $(OutputPath)OpenTK.dll ..\..\OpenTK.snk -references-file=$(IntermediateOutputPath)OpenTKReferences.cache" />
-	<Exec Condition="'$(OS)' != 'Windows_NT' and '$(OpenTKRewriteDebug)' == 'true'" WorkingDirectory="$(SolutionDir)Binaries/Tools/Debug" Command="mono ./Rewrite.exe $(SolutionDir)Binaries/OpenTK/$(Configuration)/OpenTK.dll $(SolutionDir)OpenTK.snk -debug -references-file=$(SolutionDir)Source/OpenTK/$(IntermediateOutputPath)OpenTKReferences.cache" />
-	<Exec Condition="'$(OS)' != 'Windows_NT' and '$(OpenTKRewriteDebug)' == 'false'" WorkingDirectory="$(SolutionDir)Binaries/Tools/Release" Command="mono ./Rewrite.exe $(SolutionDir)Binaries/OpenTK/$(Configuration)/OpenTK.dll $(SolutionDir)OpenTK.snk -debug -references-file=$(SolutionDir)Source/OpenTK/$(IntermediateOutputPath)OpenTKReferences.cache" />
+    <Exec Condition="'$(OS)' != 'Windows_NT' and '$(OpenTKRewriteDebug)' == 'true'" WorkingDirectory="$(SolutionDir)Binaries/Tools/Debug" Command="mono ./Rewrite.exe $(SolutionDir)Binaries/OpenTK/$(OpenTKRewriteConfiguration)/OpenTK.dll $(SolutionDir)OpenTK.snk -debug -references-file=$(SolutionDir)Source/OpenTK/$(IntermediateOutputPath)OpenTKReferences.cache" />
+    <Exec Condition="'$(OS)' != 'Windows_NT' and '$(OpenTKRewriteDebug)' == 'false'" WorkingDirectory="$(SolutionDir)Binaries/Tools/Release" Command="mono ./Rewrite.exe $(SolutionDir)Binaries/OpenTK/$(OpenTKRewriteConfiguration)/OpenTK.dll $(SolutionDir)OpenTK.snk -debug -references-file=$(SolutionDir)Source/OpenTK/$(IntermediateOutputPath)OpenTKReferences.cache" />
   </Target>
   <ProjectExtensions>
     <MonoDevelop>
@@ -943,5 +946,8 @@
     </MonoDevelop>
   </ProjectExtensions>
   <ItemGroup />
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Platform\Linux\" />
+    <Folder Include="Platform\Linux\Bindings\" />
+  </ItemGroup>
 </Project>
