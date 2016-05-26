@@ -1,14 +1,7 @@
-Notice
-======
-
-@frassle (current maintainer) is stepping away from this project. The project owner is not around to give direction, and I don't have access to the website, nuget account, travis account or most permissions on the github account. I can't push this project forward.
-
-As I'm the only one whos maintained this repo for the last 6 months with my absence pull requests and issues will probably stay unresolved. I'd suggest developer look to other projects like [MonoGame](http://www.monogame.net/) or [SDL2#](https://github.com/flibitijibibo/SDL2-CS).
-
-As this is a large project used by many people I thought it best to add this notice before signing off.
-
 OpenTK
 ======
+
+[![Join the chat at https://gitter.im/opentk/opentk](https://badges.gitter.im/opentk/opentk.svg)](https://gitter.im/opentk/opentk?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 The Open Toolkit library is a fast, low-level C# binding for OpenGL, OpenGL ES and OpenAL. It runs on all major platforms and powers hundreds of apps, games and scientific research.
 
@@ -108,7 +101,7 @@ Contributing
 For details on coding style and best practices, refer to https://github.com/opentk/opentk/wiki/Contributing
 
 Some areas we could really use your help:
-- Tutorials for OpenGL 3.x and 4.x. [Inspiration here](https://github.com/Groovounet/ogl-samples)
+- Tutorials for OpenGL 3.x and 4.x. [Inspiration here](https://github.com/g-truc/ogl-samples)
 - New platforms:
   - Native Client (NaCL)
   - Blackberry
