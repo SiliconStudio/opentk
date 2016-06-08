@@ -75,7 +75,7 @@
     <BaseAddress>285212672</BaseAddress>
     <ConfigurationOverrideFile>
     </ConfigurationOverrideFile>
-    <DefineConstants>DEBUG;TRACE;MINIMAL;NO_SYSDRAWING</DefineConstants>
+    <DefineConstants>DEBUG;TRACE;MINIMAL;NO_SYSDRAWING;SDL2;OPENGL;OPENGLES</DefineConstants>
     <DocumentationFile>..\..\Binaries\OpenTK\DebugMinimal\OpenTK.xml</DocumentationFile>
     <FileAlignment>4096</FileAlignment>
     <Optimize>false</Optimize>
@@ -110,7 +110,7 @@
     <BaseAddress>285212672</BaseAddress>
     <ConfigurationOverrideFile>
     </ConfigurationOverrideFile>
-    <DefineConstants>TRACE;MINIMAL;NO_SYSDRAWING</DefineConstants>
+    <DefineConstants>TRACE;MINIMAL;NO_SYSDRAWING;SDL2;OPENGL;OPENGLES</DefineConstants>
     <DocumentationFile>..\..\Binaries\OpenTK\ReleaseMinimal\OpenTK.xml</DocumentationFile>
     <FileAlignment>4096</FileAlignment>
     <Optimize>true</Optimize>
