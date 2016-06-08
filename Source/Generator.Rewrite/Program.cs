@@ -38,6 +38,7 @@ namespace OpenTK.Rewrite
                 Console.WriteLine("[options] is:");
                 Console.WriteLine("    -debug (enable calls to GL.GetError())");
                 Console.WriteLine("    -references-file=ReferenceCacheFile");
+                Console.WriteLine("    -dllimport (force calls to use DllImport instead of GetProcAddress)");
                 return;
             }
 
@@ -62,8 +63,12 @@ namespace OpenTK.Rewrite
         // OpenTK.BindingsBase
         static TypeDefinition TypeBindingsBase;
 
+        static bool dllimport;
+
         void Rewrite(string file, string keyfile, IEnumerable<string> options)
         {
+            dllimport = options.Contains("-dllimport");
+
             // Specify assembly read and write parameters
             // We want to keep a valid symbols file (pdb or mdb)
             var read_params = new ReaderParameters();
@@ -80,6 +85,7 @@ namespace OpenTK.Rewrite
                 provider = new Mono.Cecil.Mdb.MdbReaderProvider();
             }
             read_params.SymbolReaderProvider = provider;
+            read_params.ReadingMode = ReadingMode.Immediate;
             read_params.ReadSymbols = true;
             write_params.WriteSymbols = true;
 
@@ -199,6 +205,10 @@ namespace OpenTK.Rewrite
 
         int GetSlot(MethodDefinition signature)
         {
+            // Pretend there is no slots if we want to force everything to work through DllImport (Android & iOS)
+            if (dllimport)
+                return -1;
+
             var slot_attribute = signature.CustomAttributes
                         .FirstOrDefault(a => a.AttributeType.Name == "SlotAttribute");
             int slot =

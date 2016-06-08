@@ -5,7 +5,7 @@ using System.Drawing;
 #endif
 using System.Text;
 
-#if IPHONE || ANDROID || MINIMAL
+#if ANDROID || IPHONE || MINIMAL
 
 namespace OpenTK
 {
@@ -39,6 +39,8 @@ namespace OpenTK
         public static void Unindent() { }
         public static void Flush() { }
     }
+
+    #if MINIMAL
 
     // System.Diagnostics.Stopwatch
     sealed class Stopwatch
@@ -83,6 +85,8 @@ namespace OpenTK
         }
 #endif
     }
+
+    #endif
 
     // System.Xml.XmlIgnoreAttribute
     class XmlIgnoreAttribute : Attribute
