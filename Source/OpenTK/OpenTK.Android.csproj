@@ -1,7 +1,11 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Target Name="OpenTKRewrite" AfterTargets="CoreCompile" DependsOnTargets="ResolveProjectReferences">
+    <WriteLinesToFile File="$(IntermediateOutputPath)OpenTKReferences.cache" Lines="@(ReferencePath)" Overwrite="true" />
+  </Target>
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <OpenTKRewriteDebug>$(Configuration)</OpenTKRewriteDebug>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
@@ -233,6 +237,7 @@
     <Compile Include="Platform\Egl\EglGraphicsMode.cs" />
     <Compile Include="Platform\Egl\EglWindowInfo.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Platform\CoreCLR\UTF8String.cs" />
     <Compile Include="Platform\Android\AndroidFactory.cs" />
     <Compile Include="Platform\Android\Enums.cs" />
     <Compile Include="Platform\Android\AndroidGameView.cs" />
@@ -254,9 +259,10 @@
   </Target>
   -->
   <Target Name="AfterBuild">
-    <Exec Command="$(OutputPath)..\..\Tools\Debug\Rewrite.exe $(OutputPath)$(AssemblyName).dll ..\..\OpenTK.snk -dllimport -debug" Condition="$(OS) == 'Windows_NT' and $(Configuration) == 'Debug'" />
-    <Exec Command="$(OutputPath)..\..\Tools\Release\Rewrite.exe $(OutputPath)$(AssemblyName).dll ..\..\OpenTK.snk -dllimport" Condition="$(OS) == 'Windows_NT' and $(Configuration) != 'Debug'" />
-    <Exec Command="mono $(OutputPath)..\..\Tools\Debug\Rewrite.exe $(OutputPath)$(AssemblyName).dll ..\..\OpenTK.snk -dllimport -debug" Condition="$(OS) != 'Windows_NT' and $(Configuration) == 'Debug'" />
-    <Exec Command="mono $(OutputPath)..\..\Tools\Release\Rewrite.exe $(OutputPath)$(AssemblyName).dll ..\..\OpenTK.snk -dllimport" Condition="$(OS) != 'Windows_NT' and $(Configuration) != 'Debug'" />
+    <PropertyGroup>
+      <OpenTKRewriteArg Condition="'$(OpenTKRewriteDebug)' == 'Debug'">-debug</OpenTKRewriteArg>
+    </PropertyGroup>
+    <Exec Condition="'$(OS)' == 'Windows_NT'" Command="$(OutputPath)..\..\Tools\$(OpenTKRewriteDebug)\Rewrite.exe $(OutputPath)OpenTK.dll ..\..\OpenTK.snk $(OpenTKRewriteArg) -dllimport -references-file=$(IntermediateOutputPath)OpenTKReferences.cache" />
+    <Exec Condition="'$(OS)' != 'Windows_NT'" WorkingDirectory="$(SolutionDir)Binaries/Tools/$(OpenTKRewriteDebug)" Command="mono ./Rewrite.exe $(SolutionDir)Binaries/OpenTK/$(OpenTKRewriteDebug)/OpenTK.dll $(SolutionDir)OpenTK.snk $(OpenTKRewriteArg) -dllimport -references-file=$(SolutionDir)Source/OpenTK/$(IntermediateOutputPath)OpenTKReferences.cache" />
   </Target>
 </Project>

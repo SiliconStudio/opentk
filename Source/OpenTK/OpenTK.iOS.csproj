@@ -1,7 +1,11 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Target Name="OpenTKRewrite" AfterTargets="CoreCompile" DependsOnTargets="ResolveProjectReferences">
+    <WriteLinesToFile File="$(IntermediateOutputPath)OpenTKReferences.cache" Lines="@(ReferencePath)" Overwrite="true" />
+  </Target>
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <OpenTKRewriteDebug>$(Configuration)</OpenTKRewriteDebug>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{88368190-E3DF-4EBE-ACAA-7B1779F376CA}</ProjectGuid>
     <ProjectTypeGuids>{FEACFBD2-3405-455C-9665-78FE426C6842};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
@@ -222,6 +226,7 @@
     <Compile Include="Platform\Utilities.cs"/>
     <Compile Include="Platform\Dummy\DummyGLContext.cs"/>
     <Compile Include="Platform\Dummy\DummyWindowInfo.cs"/>
+    <Compile Include="Platform\CoreCLR\UTF8String.cs" />
     <Compile Include="Platform\iPhoneOS\iPhoneFactory.cs"/>
     <Compile Include="Platform\iPhoneOS\iPhoneOSGameView.cs"/>
     <Compile Include="Platform\iPhoneOS\iPhoneOSGraphicsContext.cs"/>
@@ -242,9 +247,10 @@
   </Target>
   -->
   <Target Name="AfterBuild">
-    <Exec Command="$(OutputPath)..\..\Tools\Debug\Rewrite.exe $(OutputPath)$(AssemblyName).dll ..\..\OpenTK.snk -dllimport -debug" Condition="$(OS) == 'Windows_NT' and $(Configuration) == 'Debug'" />
-    <Exec Command="$(OutputPath)..\..\Tools\Release\Rewrite.exe $(OutputPath)$(AssemblyName).dll ..\..\OpenTK.snk -dllimport" Condition="$(OS) == 'Windows_NT' and $(Configuration) != 'Debug'" />
-    <Exec Command="mono $(OutputPath)..\..\Tools\Debug\Rewrite.exe $(OutputPath)$(AssemblyName).dll ..\..\OpenTK.snk -dllimport -debug" Condition="$(OS) != 'Windows_NT' and $(Configuration) == 'Debug'" />
-    <Exec Command="mono $(OutputPath)..\..\Tools\Release\Rewrite.exe $(OutputPath)$(AssemblyName).dll ..\..\OpenTK.snk -dllimport" Condition="$(OS) != 'Windows_NT' and $(Configuration) != 'Debug'" />
+    <PropertyGroup>
+      <OpenTKRewriteArg Condition="'$(OpenTKRewriteDebug)' == 'Debug'">-debug</OpenTKRewriteArg>
+    </PropertyGroup>
+    <Exec Condition="'$(OS)' == 'Windows_NT'" Command="$(OutputPath)..\..\Tools\$(OpenTKRewriteDebug)\Rewrite.exe $(OutputPath)$(AssemblyName).dll ..\..\OpenTK.snk $(OpenTKRewriteArg) -dllimport -references-file=$(IntermediateOutputPath)OpenTKReferences.cache" />
+    <Exec Condition="'$(OS)' != 'Windows_NT'" WorkingDirectory="$(SolutionDir)Binaries/Tools/$(OpenTKRewriteDebug)" Command="mono ./Rewrite.exe $(SolutionDir)Binaries/OpenTK/$(OpenTKRewriteDebug)/$(AssemblyName).dll $(SolutionDir)OpenTK.snk $(OpenTKRewriteArg) -dllimport -references-file=$(SolutionDir)Source/OpenTK/$(IntermediateOutputPath)OpenTKReferences.cache" />
   </Target>
 </Project>
