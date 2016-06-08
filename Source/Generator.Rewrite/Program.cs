@@ -128,6 +128,11 @@ namespace OpenTK.Rewrite
             }
 
             // Load assembly and process all modules
+            if (!File.Exists(file))
+            {
+                Console.Error.WriteLine("Assembly " + file + " was not found.");
+                return;
+            }
             var assembly = AssemblyDefinition.ReadAssembly(file, read_params);
             var rewritten = assembly.CustomAttributes.FirstOrDefault(a => a.AttributeType.Name == "RewrittenAttribute");
             if (rewritten == null)
@@ -153,7 +158,7 @@ namespace OpenTK.Rewrite
                     var ass = assembly.MainModule.AssemblyResolver.Resolve("System.Runtime.InteropServices");
                     if (ass == null)
                     {
-                        Console.WriteLine("Failed to locate System.Runtime.InteropServices.dll");
+                        Console.Error.WriteLine("Failed to locate System.Runtime.InteropServices.dll");
                         return;
                     }
                     TypeMarshal = ass.MainModule.GetType("System.Runtime.InteropServices.Marshal");
