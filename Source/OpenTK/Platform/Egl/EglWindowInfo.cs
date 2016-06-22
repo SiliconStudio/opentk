@@ -98,7 +98,60 @@ namespace OpenTK.Platform.Egl
 
         public void CreatePbufferSurface(IntPtr config)
         {
-            Surface = Egl.CreatePbufferSurface(Display, config, null);
+            // Extract info from current config
+            int r, g, b, a;
+            int d, s;
+            int sample_buffers, samples;
+            int renderable_flags;
+            Egl.GetConfigAttrib(display, config, Egl.RED_SIZE, out r);
+            Egl.GetConfigAttrib(display, config, Egl.GREEN_SIZE, out g);
+            Egl.GetConfigAttrib(display, config, Egl.BLUE_SIZE, out b);
+            Egl.GetConfigAttrib(display, config, Egl.ALPHA_SIZE, out a);
+            Egl.GetConfigAttrib(display, config, Egl.DEPTH_SIZE, out d);
+            Egl.GetConfigAttrib(display, config, Egl.STENCIL_SIZE, out s);
+            Egl.GetConfigAttrib(display, config, Egl.SAMPLE_BUFFERS, out sample_buffers);
+            Egl.GetConfigAttrib(display, config, Egl.SAMPLES, out samples);
+            Egl.GetConfigAttrib(display, config, Egl.RENDERABLE_TYPE, out renderable_flags);
+
+            // Fill attrib list for new config
+            IntPtr[] configs = new IntPtr[1];
+            int[] attribList = new int[]
+            {
+                Egl.SURFACE_TYPE, Egl.PBUFFER_BIT,
+                Egl.RENDERABLE_TYPE, renderable_flags,
+
+                Egl.RED_SIZE, r,
+                Egl.GREEN_SIZE, g,
+                Egl.BLUE_SIZE, b,
+                Egl.ALPHA_SIZE, a,
+
+                Egl.DEPTH_SIZE, d,
+                Egl.STENCIL_SIZE, s,
+
+                Egl.SAMPLE_BUFFERS, sample_buffers,
+                Egl.SAMPLES, samples,
+
+                Egl.NONE,
+            };
+
+            // Choose config
+            int num_configs;
+            if (!Egl.ChooseConfig(display, attribList, configs, configs.Length, out num_configs) || num_configs == 0)
+            {
+                throw new GraphicsModeException(String.Format("Failed to retrieve GraphicsMode, error {0}", Egl.GetError()));
+            }
+
+            // Create PBuffer
+            var pbufferAttribList = new[]
+            {
+                Egl.WIDTH, 1,
+                Egl.HEIGHT, 1,
+                Egl.TEXTURE_TARGET, Egl.NO_TEXTURE,
+                Egl.TEXTURE_FORMAT, Egl.NO_TEXTURE,
+                Egl.NONE,
+            };
+
+            Surface = Egl.CreatePbufferSurface(Display, configs[0], pbufferAttribList);
         }
 
         public void DestroySurface()
