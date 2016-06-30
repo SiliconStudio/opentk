@@ -181,7 +181,7 @@
     <ConfigurationOverrideFile>
     </ConfigurationOverrideFile>
     <DefineConstants>TRACE;MINIMAL;NO_SYSDRAWING;WIN32;CARBON;X11;SDL2;OPENGL;OPENGLES</DefineConstants>
-    <DocumentationFile>..\..\Binaries\OpenTK\ReleaseMinimal\OpenTK.xml</DocumentationFile>
+    <DocumentationFile>..\..\Binaries\OpenTK\ReleaseCoreCLR\OpenTK.xml</DocumentationFile>
     <FileAlignment>4096</FileAlignment>
     <Optimize>true</Optimize>
     <OutputPath>..\..\Binaries\OpenTK\ReleaseCoreCLR\</OutputPath>
@@ -193,6 +193,79 @@
     <DebugType>pdbonly</DebugType>
     <OpenTKRewriteDebug>Release</OpenTKRewriteDebug>
   </PropertyGroup>
+   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'DebugCoreCLR|Linux'">
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <BaseAddress>285212672</BaseAddress>
+    <ConfigurationOverrideFile>
+    </ConfigurationOverrideFile>
+    <DefineConstants>DEBUG;TRACE;MINIMAL;NO_SYSDRAWING;LINUX;SDL2;OPENGL;OPENGLES</DefineConstants>
+    <DocumentationFile>..\..\Binaries\OpenTK\Linux\DebugCoreCLR\OpenTK.xml</DocumentationFile>
+    <FileAlignment>4096</FileAlignment>
+    <Optimize>false</Optimize>
+    <OutputPath>..\..\Binaries\OpenTK\Linux\DebugCoreCLR\</OutputPath>
+    <RegisterForComInterop>False</RegisterForComInterop>
+    <RemoveIntegerChecks>False</RemoveIntegerChecks>
+    <WarningLevel>4</WarningLevel>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <DebugSymbols>True</DebugSymbols>
+    <DebugType>full</DebugType>
+    <OpenTKRewriteDebug>Debug</OpenTKRewriteDebug>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'ReleaseCoreCLR|Linux'">
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <BaseAddress>285212672</BaseAddress>
+    <ConfigurationOverrideFile>
+    </ConfigurationOverrideFile>
+    <DefineConstants>TRACE;MINIMAL;NO_SYSDRAWING;LINUX;SDL2;OPENGL;OPENGLES</DefineConstants>
+    <DocumentationFile>..\..\Binaries\OpenTK\Linux\ReleaseCoreCLR\OpenTK.xml</DocumentationFile>
+    <FileAlignment>4096</FileAlignment>
+    <Optimize>true</Optimize>
+    <OutputPath>..\..\Binaries\OpenTK\Linux\ReleaseCoreCLR\</OutputPath>
+    <RegisterForComInterop>False</RegisterForComInterop>
+    <RemoveIntegerChecks>False</RemoveIntegerChecks>
+    <WarningLevel>4</WarningLevel>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <DebugSymbols>True</DebugSymbols>
+    <DebugType>pdbonly</DebugType>
+    <OpenTKRewriteDebug>Release</OpenTKRewriteDebug>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'DebugMinimal|Linux'">
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <BaseAddress>285212672</BaseAddress>
+    <ConfigurationOverrideFile>
+    </ConfigurationOverrideFile>
+    <DefineConstants>DEBUG;TRACE;MINIMAL;NO_SYSDRAWING;LINUX;SDL2;OPENGL;OPENGLES</DefineConstants>
+    <DocumentationFile>..\..\Binaries\OpenTK\Linux\DebugMinimal\OpenTK.xml</DocumentationFile>
+    <FileAlignment>4096</FileAlignment>
+    <Optimize>false</Optimize>
+    <OutputPath>..\..\Binaries\OpenTK\Linux\DebugMinimal\</OutputPath>
+    <RegisterForComInterop>False</RegisterForComInterop>
+    <RemoveIntegerChecks>False</RemoveIntegerChecks>
+    <WarningLevel>4</WarningLevel>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <DebugSymbols>True</DebugSymbols>
+    <DebugType>full</DebugType>
+    <OpenTKRewriteDebug>Debug</OpenTKRewriteDebug>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'ReleaseMinimal|Linux'">
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <BaseAddress>285212672</BaseAddress>
+    <ConfigurationOverrideFile>
+    </ConfigurationOverrideFile>
+    <DefineConstants>TRACE;MINIMAL;NO_SYSDRAWING;LINUX;SDL2;OPENGL;OPENGLES</DefineConstants>
+    <DocumentationFile>..\..\Binaries\OpenTK\Linux\ReleaseMinimal\OpenTK.xml</DocumentationFile>
+    <FileAlignment>4096</FileAlignment>
+    <Optimize>true</Optimize>
+    <OutputPath>..\..\Binaries\OpenTK\Linux\ReleaseMinimal\</OutputPath>
+    <RegisterForComInterop>False</RegisterForComInterop>
+    <RemoveIntegerChecks>False</RemoveIntegerChecks>
+    <WarningLevel>4</WarningLevel>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <DebugSymbols>True</DebugSymbols>
+    <DebugType>pdbonly</DebugType>
+    <OpenTKRewriteDebug>Release</OpenTKRewriteDebug>
+  </PropertyGroup>
+
   <ItemGroup Condition="'$(Configuration)' != 'DebugCoreCLR' and '$(Configuration)' != 'ReleaseCoreCLR'">
     <Reference Include="System">
       <Name>System</Name>
@@ -928,7 +1001,7 @@
     <PropertyGroup>
       <OpenTKRewriteArg Condition="'$(OpenTKRewriteDebug)' == 'Debug'">-debug</OpenTKRewriteArg>
     </PropertyGroup>
-    <Exec Condition="'$(OS)' == 'Windows_NT'" Command="$(OutputPath)..\..\Tools\$(OpenTKRewriteDebug)\Rewrite.exe $(OutputPath)OpenTK.dll ..\..\OpenTK.snk $(OpenTKRewriteArg) -references-file=$(IntermediateOutputPath)OpenTKReferences.cache" />
+    <Exec Condition="'$(OS)' == 'Windows_NT'" Command="$(MSBuildThisFileDirectory)..\..\Binaries\Tools\$(OpenTKRewriteDebug)\Rewrite.exe $(OutputPath)OpenTK.dll ..\..\OpenTK.snk $(OpenTKRewriteArg) -references-file=$(IntermediateOutputPath)OpenTKReferences.cache" />
     <Exec Condition="'$(OS)' != 'Windows_NT'" WorkingDirectory="$(SolutionDir)Binaries/Tools/$(OpenTKRewriteDebug)" Command="mono ./Rewrite.exe $(SolutionDir)Binaries/OpenTK/$(OpenTKRewriteDebug)/OpenTK.dll $(SolutionDir)OpenTK.snk $(OpenTKRewriteArg) -references-file=$(SolutionDir)Source/OpenTK/$(IntermediateOutputPath)OpenTKReferences.cache" />
   </Target>
   <ProjectExtensions>

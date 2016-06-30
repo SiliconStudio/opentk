@@ -40,13 +40,15 @@ namespace OpenTK.Platform.SDL2
 
     partial class SDL
     {
-        #if ANDROID
+#if ANDROID
         const string lib = "libSDL2.so";
-        #elif IPHONE
+#elif IPHONE
         const string lib = "__Internal";
-        #else
+#elif LINUX
+        const string lib = "libSDL2-2.0.so";
+#else
         const string lib = "SDL2.dll";
-        #endif
+#endif
 
         public readonly static object Sync = new object();
         static Nullable<Version> version;
