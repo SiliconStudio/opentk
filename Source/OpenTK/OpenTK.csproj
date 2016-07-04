@@ -193,7 +193,7 @@
     <DebugType>pdbonly</DebugType>
     <OpenTKRewriteDebug>Release</OpenTKRewriteDebug>
   </PropertyGroup>
-   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'DebugCoreCLR|Linux'">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'DebugCoreCLR|Linux'">
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <BaseAddress>285212672</BaseAddress>
     <ConfigurationOverrideFile>
@@ -257,6 +257,78 @@
     <FileAlignment>4096</FileAlignment>
     <Optimize>true</Optimize>
     <OutputPath>..\..\Binaries\OpenTK\Linux\ReleaseMinimal\</OutputPath>
+    <RegisterForComInterop>False</RegisterForComInterop>
+    <RemoveIntegerChecks>False</RemoveIntegerChecks>
+    <WarningLevel>4</WarningLevel>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <DebugSymbols>True</DebugSymbols>
+    <DebugType>pdbonly</DebugType>
+    <OpenTKRewriteDebug>Release</OpenTKRewriteDebug>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'DebugCoreCLR|macOS'">
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <BaseAddress>285212672</BaseAddress>
+    <ConfigurationOverrideFile>
+    </ConfigurationOverrideFile>
+    <DefineConstants>DEBUG;TRACE;MINIMAL;NO_SYSDRAWING;MACOS;SDL2;OPENGL;OPENGLES</DefineConstants>
+    <DocumentationFile>..\..\Binaries\OpenTK\macOS\DebugCoreCLR\OpenTK.xml</DocumentationFile>
+    <FileAlignment>4096</FileAlignment>
+    <Optimize>false</Optimize>
+    <OutputPath>..\..\Binaries\OpenTK\macOS\DebugCoreCLR\</OutputPath>
+    <RegisterForComInterop>False</RegisterForComInterop>
+    <RemoveIntegerChecks>False</RemoveIntegerChecks>
+    <WarningLevel>4</WarningLevel>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <DebugSymbols>True</DebugSymbols>
+    <DebugType>full</DebugType>
+    <OpenTKRewriteDebug>Debug</OpenTKRewriteDebug>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'ReleaseCoreCLR|macOS'">
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <BaseAddress>285212672</BaseAddress>
+    <ConfigurationOverrideFile>
+    </ConfigurationOverrideFile>
+    <DefineConstants>TRACE;MINIMAL;NO_SYSDRAWING;MACOS;SDL2;OPENGL;OPENGLES</DefineConstants>
+    <DocumentationFile>..\..\Binaries\OpenTK\macOS\ReleaseCoreCLR\OpenTK.xml</DocumentationFile>
+    <FileAlignment>4096</FileAlignment>
+    <Optimize>true</Optimize>
+    <OutputPath>..\..\Binaries\OpenTK\macOS\ReleaseCoreCLR\</OutputPath>
+    <RegisterForComInterop>False</RegisterForComInterop>
+    <RemoveIntegerChecks>False</RemoveIntegerChecks>
+    <WarningLevel>4</WarningLevel>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <DebugSymbols>True</DebugSymbols>
+    <DebugType>pdbonly</DebugType>
+    <OpenTKRewriteDebug>Release</OpenTKRewriteDebug>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'DebugMinimal|macOS'">
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <BaseAddress>285212672</BaseAddress>
+    <ConfigurationOverrideFile>
+    </ConfigurationOverrideFile>
+    <DefineConstants>DEBUG;TRACE;MINIMAL;NO_SYSDRAWING;MACOS;SDL2;OPENGL;OPENGLES</DefineConstants>
+    <DocumentationFile>..\..\Binaries\OpenTK\macOS\DebugMinimal\OpenTK.xml</DocumentationFile>
+    <FileAlignment>4096</FileAlignment>
+    <Optimize>false</Optimize>
+    <OutputPath>..\..\Binaries\OpenTK\macOS\DebugMinimal\</OutputPath>
+    <RegisterForComInterop>False</RegisterForComInterop>
+    <RemoveIntegerChecks>False</RemoveIntegerChecks>
+    <WarningLevel>4</WarningLevel>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <DebugSymbols>True</DebugSymbols>
+    <DebugType>full</DebugType>
+    <OpenTKRewriteDebug>Debug</OpenTKRewriteDebug>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'ReleaseMinimal|macOS'">
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <BaseAddress>285212672</BaseAddress>
+    <ConfigurationOverrideFile>
+    </ConfigurationOverrideFile>
+    <DefineConstants>TRACE;MINIMAL;NO_SYSDRAWING;MACOS;SDL2;OPENGL;OPENGLES</DefineConstants>
+    <DocumentationFile>..\..\Binaries\OpenTK\macOS\ReleaseMinimal\OpenTK.xml</DocumentationFile>
+    <FileAlignment>4096</FileAlignment>
+    <Optimize>true</Optimize>
+    <OutputPath>..\..\Binaries\OpenTK\macOS\ReleaseMinimal\</OutputPath>
     <RegisterForComInterop>False</RegisterForComInterop>
     <RemoveIntegerChecks>False</RemoveIntegerChecks>
     <WarningLevel>4</WarningLevel>

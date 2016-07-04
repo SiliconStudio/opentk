@@ -45,7 +45,9 @@ namespace OpenTK.Platform.SDL2
 #elif IPHONE
         const string lib = "__Internal";
 #elif LINUX
-        const string lib = "libSDL2-2.0.so";
+        const string lib = "libSDL2-2.0.so.0";
+#elif MACOS
+        const string lib = "libSDL2-2.0.0.dylib";
 #else
         const string lib = "SDL2.dll";
 #endif
