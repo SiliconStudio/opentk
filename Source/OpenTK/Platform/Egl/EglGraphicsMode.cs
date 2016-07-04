@@ -87,7 +87,7 @@ namespace OpenTK.Platform.Egl
             Egl.GetConfigAttrib(display, active_config, Egl.DEPTH_SIZE, out d);
             Egl.GetConfigAttrib(display, active_config, Egl.STENCIL_SIZE, out s);
             int sample_buffers;
-            Egl.GetConfigAttrib(display, active_config, Egl.SAMPLES, out sample_buffers);
+            Egl.GetConfigAttrib(display, active_config, Egl.SAMPLE_BUFFERS, out sample_buffers);
             Egl.GetConfigAttrib(display, active_config, Egl.SAMPLES, out samples);
 
             return new GraphicsMode(active_config, new ColorFormat(r, g, b, a), d, s, sample_buffers > 0 ? samples : 0, 0, 2, false);
