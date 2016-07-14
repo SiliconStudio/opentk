@@ -270,7 +270,7 @@
     <BaseAddress>285212672</BaseAddress>
     <ConfigurationOverrideFile>
     </ConfigurationOverrideFile>
-    <DefineConstants>DEBUG;TRACE;MINIMAL;NO_SYSDRAWING;MACOS;SDL2;OPENGL;OPENGLES</DefineConstants>
+    <DefineConstants>DEBUG;TRACE;MINIMAL;NO_SYSDRAWING;MACOS;CARBON;SDL2;OPENGL;OPENGLES</DefineConstants>
     <DocumentationFile>..\..\Binaries\OpenTK\macOS\DebugCoreCLR\OpenTK.xml</DocumentationFile>
     <FileAlignment>4096</FileAlignment>
     <Optimize>false</Optimize>
@@ -288,7 +288,7 @@
     <BaseAddress>285212672</BaseAddress>
     <ConfigurationOverrideFile>
     </ConfigurationOverrideFile>
-    <DefineConstants>TRACE;MINIMAL;NO_SYSDRAWING;MACOS;SDL2;OPENGL;OPENGLES</DefineConstants>
+    <DefineConstants>TRACE;MINIMAL;NO_SYSDRAWING;MACOS;CARBON;SDL2;OPENGL;OPENGLES</DefineConstants>
     <DocumentationFile>..\..\Binaries\OpenTK\macOS\ReleaseCoreCLR\OpenTK.xml</DocumentationFile>
     <FileAlignment>4096</FileAlignment>
     <Optimize>true</Optimize>
@@ -306,7 +306,7 @@
     <BaseAddress>285212672</BaseAddress>
     <ConfigurationOverrideFile>
     </ConfigurationOverrideFile>
-    <DefineConstants>DEBUG;TRACE;MINIMAL;NO_SYSDRAWING;MACOS;SDL2;OPENGL;OPENGLES</DefineConstants>
+    <DefineConstants>DEBUG;TRACE;MINIMAL;NO_SYSDRAWING;MACOS;CARBON;SDL2;OPENGL;OPENGLES</DefineConstants>
     <DocumentationFile>..\..\Binaries\OpenTK\macOS\DebugMinimal\OpenTK.xml</DocumentationFile>
     <FileAlignment>4096</FileAlignment>
     <Optimize>false</Optimize>
@@ -324,7 +324,7 @@
     <BaseAddress>285212672</BaseAddress>
     <ConfigurationOverrideFile>
     </ConfigurationOverrideFile>
-    <DefineConstants>TRACE;MINIMAL;NO_SYSDRAWING;MACOS;SDL2;OPENGL;OPENGLES</DefineConstants>
+    <DefineConstants>TRACE;MINIMAL;NO_SYSDRAWING;MACOS;CARBON;SDL2;OPENGL;OPENGLES</DefineConstants>
     <DocumentationFile>..\..\Binaries\OpenTK\macOS\ReleaseMinimal\OpenTK.xml</DocumentationFile>
     <FileAlignment>4096</FileAlignment>
     <Optimize>true</Optimize>
