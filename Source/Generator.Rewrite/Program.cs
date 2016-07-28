@@ -49,18 +49,18 @@ namespace OpenTK.Rewrite
             program.Rewrite(file, key, options);
         }
 
-        // Assemblies
-        static AssemblyDefinition coreAssembly; // System.Runtime or mscorlib
-
-        // Type defs
+        // Corelib type Defs. We are using them to get methods, so it is ok.
         static TypeDefinition TypeMarshal;
         static TypeDefinition TypeStringBuilder;
-        static TypeDefinition TypeUTF8String;
-        static TypeDefinition TypeVoid;
-        static TypeDefinition TypeIntPtr;
-        static TypeDefinition TypeInt32;
+        static TypeDefinition TypeArray;
+        // Corelib type Refs.
+        static TypeReference TypeVoid;
+        static TypeReference TypeIntPtr;
+        static TypeReference TypeInt32;
+        static TypeReference TypeStringArray;
 
-        // OpenTK.BindingsBase
+        // OpenTK defined types
+        static TypeDefinition TypeUTF8String;
         static TypeDefinition TypeBindingsBase;
 
         static bool dllimport;
@@ -134,10 +134,13 @@ namespace OpenTK.Rewrite
                 return;
             }
             var assembly = AssemblyDefinition.ReadAssembly(file, read_params);
+
             var rewritten = assembly.CustomAttributes.FirstOrDefault(a => a.AttributeType.Name == "RewrittenAttribute");
             if (rewritten == null)
             {
-                var corlib = assembly.MainModule.TypeSystem.Corlib as AssemblyNameReference;
+                AssemblyNameReference corlib = assembly.MainModule.TypeSystem.CoreLibrary as AssemblyNameReference;
+                AssemblyDefinition coreAssembly;
+                ;
                 if (corlib == null)
                 {
                     Console.Error.WriteLine("Failed to locate mscorlib");
@@ -148,9 +151,11 @@ namespace OpenTK.Rewrite
                     coreAssembly = assembly.MainModule.AssemblyResolver.Resolve(corlib);
                 }
                 TypeStringBuilder = coreAssembly.MainModule.GetType("System.Text.StringBuilder");
-                TypeVoid = coreAssembly.MainModule.GetType("System.Void");
-                TypeIntPtr = coreAssembly.MainModule.GetType("System.IntPtr");
-                TypeInt32 = coreAssembly.MainModule.GetType("System.Int32");
+                TypeArray = coreAssembly.MainModule.GetType("System.Array");
+                TypeStringArray = new ArrayType(assembly.MainModule.TypeSystem.String);
+                TypeVoid = assembly.MainModule.TypeSystem.Void;
+                TypeIntPtr = assembly.MainModule.TypeSystem.IntPtr;
+                TypeInt32 = assembly.MainModule.TypeSystem.Int32;
 
                 TypeMarshal = coreAssembly.MainModule.GetType("System.Runtime.InteropServices.Marshal");
                 if (TypeMarshal == null)
@@ -170,7 +175,7 @@ namespace OpenTK.Rewrite
                 {
                     foreach (var type in module.Types)
                     {
-                        Rewrite(type, options);
+                        Rewrite(assembly, type, options);
                     }
                 }
             }
@@ -183,7 +188,7 @@ namespace OpenTK.Rewrite
             assembly.Write(file, write_params);
         }
 
-        void Rewrite(TypeDefinition type, IEnumerable<string> options)
+        void Rewrite(AssemblyDefinition assembly, TypeDefinition type, IEnumerable<string> options)
         {
             var entry_points = type.Fields.FirstOrDefault(f => f.Name == "EntryPoints");
             if (entry_points != null)
@@ -202,8 +207,8 @@ namespace OpenTK.Rewrite
             {
                 var rewritten_constructor = type.GetConstructors().First();
                 var rewritten = new CustomAttribute(rewritten_constructor);
-                rewritten.ConstructorArguments.Add(new CustomAttributeArgument(
-                    type.Module.Import(coreAssembly.MainModule.GetType("System.Boolean")), true));
+                rewritten.ConstructorArguments.Add(
+                    new CustomAttributeArgument(assembly.MainModule.TypeSystem.Boolean, true));
                 type.Module.Assembly.CustomAttributes.Add(rewritten);
             }
         }
@@ -511,7 +516,7 @@ namespace OpenTK.Rewrite
                     // String return-type wrapper to convert from UTF8
                     // return OpenTK.Platform.UTF8String.String(GetString());
 
-                    var string_constructor = wrapper.Module.Import(TypeUTF8String.Methods
+                    var string_constructor = wrapper.Module.ImportReference(TypeUTF8String.Methods
                         .First(m =>
                     {
                         if (m.IsStatic)
@@ -587,8 +592,8 @@ namespace OpenTK.Rewrite
             //  Marshal.FreeHGlobal(sb_ptr);
             // }
             // Make sure we have imported StringBuilder::Capacity and Marshal::AllocHGlobal
-            var sb_get_capacity = method.Module.Import(TypeStringBuilder.Methods.First(m => m.Name == "get_Capacity"));
-            var alloc_hglobal = method.Module.Import(TypeMarshal.Methods.First(m => m.Name == "AllocHGlobal"));
+            var sb_get_capacity = method.Module.ImportReference(TypeStringBuilder.Methods.First(m => m.Name == "get_Capacity"));
+            var alloc_hglobal = method.Module.ImportReference(TypeMarshal.Methods.First(m => m.Name == "AllocHGlobal"));
 
             // IntPtr ptr;
             var variable_name = parameter.Name + " _sb_ptr";
@@ -621,8 +626,8 @@ namespace OpenTK.Rewrite
                 // }
 
                 // Make sure we have imported BindingsBase::MasrhalPtrToStringBuilder and Marshal::FreeHGlobal
-                var ptr_to_sb = wrapper.Module.Import(TypeBindingsBase.Methods.First(m => m.Name == "MarshalPtrToStringBuilder"));
-                var free_hglobal = wrapper.Module.Import(TypeMarshal.Methods.First(m => m.Name == "FreeHGlobal"));
+                var ptr_to_sb = wrapper.Module.ImportReference(TypeBindingsBase.Methods.First(m => m.Name == "MarshalPtrToStringBuilder"));
+                var free_hglobal = wrapper.Module.ImportReference(TypeMarshal.Methods.First(m => m.Name == "FreeHGlobal"));
 
                 var block = new ExceptionHandler(ExceptionHandlerType.Finally);
                 block.TryStart = body.Instructions[0];
@@ -651,7 +656,7 @@ namespace OpenTK.Rewrite
             // IntPtr ptr = MarshalStringToPtr(str);
             // try { calli }
             // finally { Marshal.FreeHGlobal(ptr); }
-            var marshal_str_to_ptr = wrapper.Module.Import(TypeBindingsBase.Methods.First(m => m.Name == "MarshalStringToPtr"));
+            var marshal_str_to_ptr = wrapper.Module.ImportReference(TypeBindingsBase.Methods.First(m => m.Name == "MarshalStringToPtr"));
 
             // IntPtr ptr;
             var variable_name = parameter.Name + "_string_ptr";
@@ -669,7 +674,7 @@ namespace OpenTK.Rewrite
         static void EmitStringEpilogue(MethodDefinition wrapper, ParameterDefinition parameter, MethodBody body, ILProcessor il)
         {
             var p = parameter.ParameterType;
-            var free = wrapper.Module.Import(TypeBindingsBase.Methods.First(m => m.Name == "FreeStringPtr"));
+            var free = wrapper.Module.ImportReference(TypeBindingsBase.Methods.First(m => m.Name == "FreeStringPtr"));
 
             // FreeStringPtr(ptr)
             var variable_name = parameter.Name + "_string_ptr";
@@ -686,7 +691,7 @@ namespace OpenTK.Rewrite
             // IntPtr ptr = MarshalStringArrayToPtr(strings);
             // try { calli }
             // finally { FreeStringArrayPtr(ptr); }
-            var marshal_str_array_to_ptr = wrapper.Module.Import(TypeBindingsBase.Methods.First(m => m.Name == "MarshalStringArrayToPtr"));
+            var marshal_str_array_to_ptr = wrapper.Module.ImportReference(TypeBindingsBase.Methods.First(m => m.Name == "MarshalStringArrayToPtr"));
 
             // IntPtr ptr;
             var variable_name = parameter.Name + "_string_array_ptr";
@@ -706,7 +711,7 @@ namespace OpenTK.Rewrite
             // Note: only works for string vectors (1d arrays).
             // We do not (and will probably never) support 2d or higher string arrays
             var p = parameter.ParameterType;
-            var free = wrapper.Module.Import(TypeBindingsBase.Methods.First(m => m.Name == "FreeStringArrayPtr"));
+            var free = wrapper.Module.ImportReference(TypeBindingsBase.Methods.First(m => m.Name == "FreeStringArrayPtr"));
 
             // FreeStringArrayPtr(string_array_ptr, string_array.Length)
             var variable_name = parameter.Name + "_string_array_ptr";
@@ -793,7 +798,7 @@ namespace OpenTK.Rewrite
             for (i = 0; i < method.Parameters.Count; i++)
             {
                 var parameter = method.Parameters[i];
-                var p = method.Module.Import(method.Parameters[i].ParameterType);
+                var p = method.Module.ImportReference(method.Parameters[i].ParameterType);
                 il.Emit(OpCodes.Ldarg, i);
 
                 if (p.Name.Contains("Int32") && native.Parameters[i].ParameterType.Name.Contains("IntPtr"))
@@ -820,7 +825,7 @@ namespace OpenTK.Rewrite
                 }
                 else if (p.IsArray)
                 {
-                    if (p.Name != method.Module.Import(typeof(string[])).Name)
+                    if (p.Name != TypeStringArray.Name)
                     {
                         // .Net treats 1d arrays differently than higher rank arrays.
                         // 1d arrays are directly supported by instructions such as ldlen and ldelema.
@@ -864,8 +869,7 @@ namespace OpenTK.Rewrite
                         }
                         else
                         {
-                            var get_length = method.Module.Import(
-                                coreAssembly.MainModule.GetType("System.Array").Methods.First(m => m.Name == "get_Length"));
+                            var get_length = method.Module.ImportReference(TypeArray.Methods.First(m => m.Name == "get_Length"));
                             il.Emit(OpCodes.Callvirt, get_length);
                         }
                         il.Emit(OpCodes.Brtrue, pin);
