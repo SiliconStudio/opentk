@@ -642,7 +642,8 @@ namespace OpenTK.Platform.Windows
         /// </summary>
         /// <param name="dllName"></param>
         /// <returns></returns>
-        [DllImport("kernel32.dll", SetLastError = true)]
+        [DllImport("kernel32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
+        [SecuritySafeCritical]
         internal static extern IntPtr LoadLibrary(string dllName);
 
         #endregion
